@@ -7,7 +7,6 @@ const valueElement = document.getElementById('value');
 const countElement = document.getElementById('count');
 const incrementBtn = document.getElementById('increment-btn');
 const decrementBtn = document.getElementById('decrement-btn');
-const levelSection = document.querySelector('.level');
 const grandTotal = document.getElementById('grand_total');
 const levelContainer = document.querySelector('.level-container');
 const currentLevelElement = document.getElementById('current-level');
@@ -84,26 +83,22 @@ function updateLevelContainerPosition(percentage) {
     // Move the current level
     currentLevelElement.style.transform = `translateX(${percentage}%)`;
     
-    // Move and fade the side levels
+    // Move the side levels without changing opacity
     if (percentage > 0) {
         // Moving right (showing previous level)
         previousLevelElement.style.transform = `translateX(${percentage - 100}%)`;
-        previousLevelElement.style.opacity = Math.abs(percentage) / 100;
         nextLevelElement.style.transform = `translateX(${percentage + 100}%)`;
-        nextLevelElement.style.opacity = 0;
     } else {
         // Moving left (showing next level)
         previousLevelElement.style.transform = `translateX(${percentage - 100}%)`;
-        previousLevelElement.style.opacity = 0;
         nextLevelElement.style.transform = `translateX(${percentage + 100}%)`;
-        nextLevelElement.style.opacity = Math.abs(percentage) / 100;
     }
 }
 
 function updateLevelDisplay() {
-    currentLevelElement.textContent = minimizeNotation(paddle.levels[level].amount);
-    previousLevelElement.textContent = level > 0 ? minimizeNotation(paddle.levels[level - 1].amount) : '';
-    nextLevelElement.textContent = level < paddle.levels.length - 1 ? minimizeNotation(paddle.levels[level + 1].amount) : '';
+    currentLevelElement.textContent = addCommasAndDollarSign(paddle.levels[level].amount);
+    previousLevelElement.textContent = level > 0 ? addCommasAndDollarSign(paddle.levels[level - 1].amount) : '';
+    nextLevelElement.textContent = level < paddle.levels.length - 1 ? addCommasAndDollarSign(paddle.levels[level + 1].amount) : '';
 }
 
 function finishLevelChange(targetPercentage) {
@@ -138,22 +133,12 @@ function finishLevelChange(targetPercentage) {
             isDragging = false;
             startX = null;
             currentX = null;
+            
+            saveData(); // Save data after level change
         }
     }
 
     requestAnimationFrame(animate);
-}
-
-function incrementLevel() {
-    if (level < paddle.levels.length - 1) {
-        finishLevelChange(-100);
-    }
-}
-
-function decrementLevel() {
-    if (level > 0) {
-        finishLevelChange(100);
-    }
 }
 
 // Easing function for smoother animation
@@ -172,7 +157,7 @@ function updateCountDisplay() {
     let amount = paddle.levels[level].amount
 
     // update grand total
-    grandTotal.textContent = minimizeNotation(paddle.grandTotal);
+    grandTotal.textContent = addCommasAndDollarSign(paddle.grandTotal);
 
     // update count display
     valueElement.textContent = minimizeNotation(count * amount);
@@ -184,8 +169,9 @@ function updateCountDisplay() {
 incrementBtn.addEventListener('click', function() {
     // Increment the count
     paddle.levels[level].count += 1;
-    updateCountDisplay();
     paddle.updateGrandTotal(paddle.levels[level].amount);
+    updateCountDisplay();
+    saveData(); // Save data after increment
 });
 
 // Decrement button event
@@ -193,14 +179,20 @@ decrementBtn.addEventListener('click', function() {
     // Ensure count doesn't go below 0
     if (paddle.levels[level].count > 0) {
         paddle.levels[level].count -= 1;
-        updateCountDisplay();
         paddle.updateGrandTotal(-paddle.levels[level].amount);
+        updateCountDisplay();
+        saveData(); // Save data after decrement
     }
 });
 
+// Function to add commas to large numbers
+function addCommasAndDollarSign(num) {
+    return "$" + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 // slick chat GPT function for readability
 function minimizeNotation(num) {
-    const suffixes = ['', 'k', 'M', 'B', 'T']; // Suffixes for thousand, million, billion, etc.
+    const suffixes = ['', 'K', 'M', 'B', 'T']; // Suffixes for thousand, million, billion, etc.
     let suffixIndex = 0;
 
     // Divide num by 1000 until it's below 1000, and track how many times we divide
@@ -219,5 +211,69 @@ function minimizeNotation(num) {
         formattedNum = formattedNum.slice(0, -1); // Remove trailing zero
     }
 
-    return formattedNum + suffixes[suffixIndex];
+    return "$" + formattedNum + suffixes[suffixIndex];
+}
+
+const settingsBtn = document.getElementById('settings-btn');
+const mainBtn = document.getElementById('main-btn');
+const customListsBtn = document.getElementById('custom-lists-btn');
+
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    
+    document.querySelectorAll('footer button').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`button[data-page="${pageId}"]`).classList.add('active');
+}
+
+settingsBtn.addEventListener('click', () => showPage('settings-page'));
+mainBtn.addEventListener('click', () => showPage('main-page'));
+customListsBtn.addEventListener('click', () => showPage('custom-lists-page'));
+
+// Set data-page attributes for the buttons
+settingsBtn.setAttribute('data-page', 'settings-page');
+mainBtn.setAttribute('data-page', 'main-page');
+customListsBtn.setAttribute('data-page', 'custom-lists-page');
+
+// Set the main button as active by default
+mainBtn.classList.add('active');
+
+document.getElementById('settings-btn').addEventListener('click', () => {
+    window.location.href = 'settings.html';
+});
+
+document.getElementById('main-btn').addEventListener('click', () => {
+    window.location.href = 'index.html';
+});
+
+document.getElementById('custom-lists-btn').addEventListener('click', () => {
+    window.location.href = 'custom-lists.html';
+});
+
+// Load saved data when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadSavedData();
+    updateCountDisplay();
+    updateLevelDisplay();
+});
+
+// Function to save data
+function saveData() {
+    const dataToSave = {
+        level: level,
+        levels: paddle.levels,
+        grandTotal: paddle.grandTotal
+    };
+    localStorage.setItem('paddleData', JSON.stringify(dataToSave));
+}
+
+// Function to load saved data
+function loadSavedData() {
+    const savedData = localStorage.getItem('paddleData');
+    if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        level = parsedData.level;
+        paddle.levels = parsedData.levels;
+        paddle.grandTotal = parsedData.grandTotal;
+    }
 }

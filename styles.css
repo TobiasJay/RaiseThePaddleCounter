@@ -43,7 +43,7 @@ section {
     width: 45%; /* Set a width for the boxes */
 }
 
-#count, #value {
+#count, #value, #at {
     font-size: 2rem;
     font-weight: bold;
 }
@@ -76,15 +76,10 @@ section {
     align-items: center;
     font-size: 2rem;
     font-weight: bold;
-    transition: opacity 0.3s ease-out;
 }
 
 #current-level {
     z-index: 2;
-}
-
-#previous-level, #next-level {
-    opacity: 0;
 }
 
 /* Add these new animation classes */
@@ -153,6 +148,10 @@ section {
 }
 
 footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: 5%;
     display: flex;
     justify-content: space-between;
@@ -160,7 +159,7 @@ footer {
 }
 
 footer button {
-    width: 49%;
+    width: 33.33%;
     padding: 10px;
     border: none;
     background-color: #636e72;
@@ -172,4 +171,29 @@ footer button {
 
 footer button:hover {
     background-color: #2d3436;
+}
+
+footer button.active {
+    background-color: #2d3436;
+}
+
+/* Add styles for the new pages */
+.page {
+    display: none;
+    flex-direction: column;
+    height: 95%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.page.active {
+    display: flex;
+}
+
+#settings-page, #custom-lists-page {
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
 }

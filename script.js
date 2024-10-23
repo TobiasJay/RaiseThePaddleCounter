@@ -7,6 +7,7 @@ const counter = document.getElementById('count');
 const incrementBtn = document.getElementById('increment-btn');
 const decrementBtn = document.getElementById('decrement-btn');
 const levelSection = document.querySelector('.level');
+const grandTotal = document.getElementById('grand_total');
 
 
 // Update the display
@@ -14,6 +15,9 @@ function updateCountDisplay() {
     // get count and amount
     let count = paddle.levels[level].count
     let amount = paddle.levels[level].amount
+
+    // update grand total
+    grandTotal.textContent = minimizeNotation(paddle.calculateGrandTotal());
 
     // update count display
     counter.textContent = minimizeNotation(count * amount);

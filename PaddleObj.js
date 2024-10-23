@@ -30,7 +30,13 @@ export class PaddleObj {
         }
     }
 
-    getTotalCount() {
-        return this.levels.reduce((total, level) => total + level.count, 0);
+    calculateGrandTotal() {
+        let total = 0;
+
+        this.levels.forEach(level => {
+            total += level.amount * level.count;
+        });
+
+        return total;
     }
 }

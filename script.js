@@ -1,6 +1,6 @@
 import { PaddleObj } from './PaddleObj.js';
 
-level = 0;
+let level = 0;
 
 const paddle = new PaddleObj();
 const counter = document.getElementById('count');
@@ -10,20 +10,35 @@ const levelSection = document.querySelector('.level');
 
 
 // Update the display
-function updateCount() {
+function updateCountDisplay() {
     // get count and amount
     let count = paddle.levels[level].count
     let amount = paddle.levels[level].amount
 
     // update count display
     counter.textContent = minimizeNotation(count * amount);
-    // update count record
-    paddle.incrementCount(amount);
 }
 
-function updateLevel() {
+function incrementLevel() {
+    // go to next level
+    level = level + 1;
+
+    // Update the count
+    updateCountDisplay();
+
     // Update the level window
-    document.getElementById('level').textContent = minimizeNotation(level);
+    levelSection.textContent = minimizeNotation(paddle.levels[level].amount);
+}
+
+function decrementLevel() {
+    // go to previous level
+    level = level - 1;
+
+    // Update the count
+    updateCountDisplay();
+
+    // Update the level window
+    levelSection.textContent = minimizeNotation(paddle.levels[level].amount);
 }
 
 // slick chat GPT function for readability
@@ -51,18 +66,22 @@ function minimizeNotation(num) {
 }
 
 
-
-
 // Increment button event
 incrementBtn.addEventListener('click', function() {
-    count++;
-    updateCount();
+    /// Need to incriment the count then update it 
+    // get count and amount
+    let count = paddle.levels[level].count + 1;
+    paddle.levels[level].count = count;
+    updateCountDisplay();
+
 });
 
 // Decrement button event
 decrementBtn.addEventListener('click', function() {
-    count--;
-    updateCount();
+    let count = paddle.levels[level].count - 1;
+    paddle.levels[level].count = count;
+    updateCountDisplay();
+
 });
 
 // Change level function
@@ -71,9 +90,11 @@ levelSection.addEventListener('click', (e) => {
     const clickX = e.clientX;
 
     if (clickX < sectionWidth / 2) {
+        // need to check on case where its first level in the list
         console.log('Left side clicked');
         decrementLevel(); // Call function for left side (decrement)
     } else {
+        // need to check on case where its last level in the list
         console.log('Right side clicked');
         incrementLevel(); // Call function for right side (increment)
     }

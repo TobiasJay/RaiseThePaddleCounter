@@ -1,0 +1,105 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0;
+}
+
+section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Set the height of each section according to the fractions */
+#counter_window {
+    height: 20%;
+    background-color: #e0e0e0;
+    border-bottom: 1px solid #ccc;
+}
+
+.level {
+    height: 20%;
+    background-color: #e0e0e0;
+    border-bottom: 1px solid #ccc;
+}
+
+.buttons {
+    height: 45%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+.buttons button {
+    width: 40%;
+    padding: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+}
+
+#decrement-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+#increment-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#decrement-btn:hover {
+    background-color: #d32f2f;
+}
+
+#increment-btn:hover {
+    background-color: #45a049;
+}
+
+.grand_total {
+    height: 10%;
+    background-color: #dfe6e9;
+    text-align: center;
+}
+
+.grand_total h2 {
+    margin-bottom: 5px;
+}
+
+footer {
+    height: 5%;
+    display: flex;
+    justify-content: space-between;
+    background-color: #b2bec3;
+}
+
+footer button {
+    width: 49%;
+    padding: 10px;
+    border: none;
+    background-color: #636e72;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+footer button:hover {
+    background-color: #2d3436;
+}

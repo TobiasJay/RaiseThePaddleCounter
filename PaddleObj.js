@@ -10,6 +10,7 @@ export class PaddleObj {
             { amount: 100, count: 0 },
             { amount: 50, count: 0 }
         ];
+        this.grandTotal = 0;
     }
 
     incrementCount(levelAmount) {
@@ -30,13 +31,7 @@ export class PaddleObj {
         }
     }
 
-    calculateGrandTotal() {
-        let total = 0;
-
-        this.levels.forEach(level => {
-            total += level.amount * level.count;
-        });
-
-        return total;
+    updateGrandTotal(levelAmount) {
+        this.grandTotal += levelAmount;
     }
 }

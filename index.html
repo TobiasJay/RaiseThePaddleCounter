@@ -8,10 +8,20 @@
 </head>
 <body>
     <section class="level">
-        <span id="level">10k</span>
+        <div class="level-container">
+            <span id="previous-level" class="side-level"></span>
+            <span id="current-level">10k</span>
+            <span id="next-level" class="side-level"></span>
+        </div>
     </section>
     <section id="counter_window">
-        <span id="count">0</span>
+        <div class="box">
+            <div id="count">0</div>
+            <div class="label">bidders</div>
+        </div>
+        <div class="box">
+            <div id="value">0</div>
+        </div>
     </section>
     <section class="buttons">
         <button id="decrement-btn">-</button>   
